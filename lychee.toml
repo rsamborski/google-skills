@@ -1,0 +1,6 @@
+# Rate-limit requests to raw.githubusercontent.com to 1 request per second
+# (1 concurrent request with a 1-second minimum interval between requests)
+# to avoid HTTP 429 throttling during scheduled link checks.
+[hosts."raw.githubusercontent.com"]
+concurrency = 1
+request_interval = "1s"

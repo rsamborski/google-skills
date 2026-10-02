@@ -1,0 +1,49 @@
+name: Check Markdown Links
+
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Mondays at 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  linkChecker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # ratchet:actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Link Checker
+        id: lychee
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # ratchet:lycheeverse/lychee-action@v2
+        with:
+          args: --config ./lychee.toml --verbose --no-progress './skills/**/*.md' './plugins/**/*.md' './*.md'
+          fail: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare Issue Body
+        if: steps.lychee.outputs.exit_code != 0
+        run: |
+          cat << 'EOF' > ./lychee/issue-body.md
+          > **Note:** All broken links need to be updated in the internal source of truth.
+
+          EOF
+          cat ./lychee/out.md >> ./lychee/issue-body.md
+
+      - name: Create Issue From File
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@e8ef132d6df98ed982188e460ebb3b5d4ef3a9cd # ratchet:peter-evans/create-issue-from-file@v5
+        with:
+          title: Link Checker Report
+          content-filepath: ./lychee/issue-body.md
+          labels: report, automated issue
+
+      - name: Fail if there were errors
+        if: steps.lychee.outputs.exit_code != 0
+        run: exit ${{ steps.lychee.outputs.exit_code }}
