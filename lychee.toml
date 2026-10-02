@@ -4,8 +4,8 @@ verbose = "error"
 accept = ["200", "403"]
 
 exclude_path = [
-    "^README\\.md$",
-    "^CHANGELOG\\.md$",
+    "README\\.md$",
+    "CHANGELOG\\.md$",
 ]
 
 # Maximum simultaneous requests to the same host
