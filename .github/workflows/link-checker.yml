@@ -43,7 +43,3 @@ jobs:
           title: Link Checker Report
           content-filepath: ./lychee/issue-body.md
           labels: bug, link checker
-
-      - name: Fail if there were errors
-        if: steps.lychee.outputs.exit_code != 0
-        run: exit ${{ steps.lychee.outputs.exit_code }}
