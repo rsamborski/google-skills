@@ -1,7 +1,7 @@
 # Output settings
 no_progress = true
 verbose = "error"
-accept = ["200", "403"]
+accept = ["200", "302", "403", "503"]
 
 exclude_path = [
     "README\\.md$",
