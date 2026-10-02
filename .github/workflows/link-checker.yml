@@ -42,7 +42,7 @@ jobs:
         with:
           title: Link Checker Report
           content-filepath: ./lychee/issue-body.md
-          labels: report, automated issue
+          labels: bug, link checker
 
       - name: Fail if there were errors
         if: steps.lychee.outputs.exit_code != 0
